@@ -1,0 +1,39 @@
+.login-container {
+    min-height: 100vh;
+}
+.login-box {
+    min-width: 500px;
+    border-radius: 30px;
+}
+.login-box h1 {
+    font-size: 25px;
+}
+
+.alert-success-abs {
+    position: absolute;
+    top: 20px;
+    left: 0;
+    right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    width: fit-content;
+}
+
+.nav-request-toko {
+    position: relative;
+}
+
+.nav-request-toko div {
+    position: absolute;
+    top: 7px;
+    right: 4px;
+    height: 13px;
+    padding: 0 3px;
+    width: 13px;
+    border-radius: 50%;
+    background-color: red;
+    color: white;
+    font-size: 10px;
+    text-align: center;
+}
