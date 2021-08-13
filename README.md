@@ -16,6 +16,11 @@ kemudian:
 
 > php artisan serve
 
+## Akun Admin
+
+email: admin@gmail.com
+password: password
+
 ## Rest API
 
 **1. Login Toko**
