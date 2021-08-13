@@ -12,13 +12,13 @@ class Product extends Model
         return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
-    /**
-     * Get all of the comments for the Product
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function productRequest()
+    public function requestProduct()
     {
-        return $this->hasMany(ProductRequest::class, 'product_id', 'id');
+        return $this->belongsToMany(ProductRequest::class, 'productreq_detail', 'product_id', 'product_request_id')->withPivot('amount');
+    }
+
+    public function store()
+    {
+        return $this->belongsToMany(User::class, 'store_product', 'product_id', 'user_id')->withPivot('stock');
     }
 }

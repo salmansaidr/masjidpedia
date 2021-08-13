@@ -74,6 +74,11 @@
                               <a href="{{ route('register') }}" class="btn btn-outline-primary d-inline-block">Register</a>
                           </div>
                       </div>
+                      <div class="row">
+                            <a class="btn btn-link" href="{{ route('password.request') }}">
+                                {{ __('Lupa password ? klik di sini') }}
+                            </a>
+                      </div>
                 </form>
             </div>
         </div>

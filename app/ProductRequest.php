@@ -15,6 +15,11 @@ class ProductRequest extends Model
 
     public function product()
     {
-        return $this->belongsTo(Product::class, 'product_id', 'id');
+        return $this->belongsToMany(Product::class, 'productreq_detail', 'product_request_id', 'product_id')->withPivot('amount');
+    }
+
+    public function supplier()
+    {
+        return $this->belongsTo(User::class, 'supplier_id', 'id');
     }
 }

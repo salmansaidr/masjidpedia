@@ -15,9 +15,7 @@ class RequestProductSupplierController extends Controller
     }
 
     public static function countNewrequest() {
-        $new_request = ProductRequest::where('is_approve', 0)->whereHas('product', function($q) {
-            $q->where('user_id', Auth::user()->id);
-        })->count();
+        $new_request = ProductRequest::where([['is_approve', 0],['supplier_id', Auth::user()->id]])->count();
 
         return $new_request > 0 ? true : false;
     }
@@ -27,25 +25,43 @@ class RequestProductSupplierController extends Controller
         $productRequest->is_approve = 1;
         $productRequest->save();
 
-        $product = Product::findOrFail($productRequest->product_id);
-        $new_stock = $product->stock - $productRequest->amount;
-        $product->stock = $new_stock;
-        $product->save();
+        $products = $productRequest->product()->get();
+
+        foreach($products as $p) {
+            $product = Product::findOrFail($p->id);
+            if($product->stock != 0) {
+                $new_stock = $product->stock - $p->pivot->amount;
+                $product->stock = $new_stock;
+                $product->save();
+
+                if($productRequest->user->store()->where('product_id', $p->id)->exists()) {
+                    $exist_stock = $productRequest->user->store()->where('product_id', $p->id)->first()->pivot->stock;
+                    $productRequest->user->store()->updateExistingPivot($p->id, ['stock' => $exist_stock + $p->pivot->amount]);
+                } else {
+                    $productRequest->user->store()->attach($p->id, ['stock' => $p->pivot->amount]);
+                }
+            }
+        }
+
         return 'success';
+    }
+
+    public function detailProduct($id) {
+        $products = ProductRequest::findOrFail($id)->product()->get();
+        return view('supplier.request_product', compact('products'));
     }
 
     public function datatable(Request $request) {
         $base_code = DB::table('product_requests')
-        ->join('products', 'products.id', '=', 'product_requests.product_id')
         ->join('users', 'users.id', '=', 'product_requests.user_id')
-        ->select('product_requests.id', 'product_requests.amount', 'product_requests.is_approve', 'users.name as username', 'products.name', 'products.user_id')
-        ->where('products.user_id', Auth::user()->id);
+        ->select('product_requests.id', 'product_requests.is_approve', 'product_requests.supplier_id', 'product_requests.created_at', 'users.name as username')
+        ->where('product_requests.supplier_id', Auth::user()->id);
         
         $columns = [
             'id',
+            'tanggal',
             'toko',
             'product',
-            'amount',
             'options'
         ];
 
@@ -63,11 +79,9 @@ class RequestProductSupplierController extends Controller
         } else {
             $search = $request->input('search.value');
             $base_code =  DB::table('product_requests')
-            ->join('products', 'products.id', '=', 'product_requests.product_id')
             ->join('users', 'users.id', '=', 'product_requests.user_id')
-            ->select('product_requests.id', 'product_requests.amount', 'product_requests.is_approve', 'users.name as username', 'products.name', 'products.user_id')
-            ->where([['products.user_id', Auth::user()->id], ['products.name', 'LIKE',  '%' .$search . '%']])
-            ->orWhere([['products.user_id', Auth::user()->id], ['users.name', 'LIKE',  '%' .$search . '%']]);
+            ->select('product_requests.id', 'product_requests.is_approve', 'product_requests.created_at', 'users.name as username')
+            ->where([['product_requests.supplier_id', Auth::user()->id], ['users.name', 'LIKE',  '%' .$search . '%']]);
             $productRequest = $base_code->offset($start)
                 ->limit($limit)
                 ->orderBy('product_requests.id', 'desc')
@@ -86,9 +100,9 @@ class RequestProductSupplierController extends Controller
                 
 
                 $nestedData[$columns[0]] = $pr->id;
-                $nestedData[$columns[1]] = $pr->username;
-                $nestedData[$columns[2]] = $pr->name;
-                $nestedData[$columns[3]] = $pr->amount;
+                $nestedData[$columns[1]] = date('d-m-Y', strtotime($pr->created_at));
+                $nestedData[$columns[2]] = $pr->username;
+                $nestedData[$columns[3]] = '<a href="#" style="text-decoration: none;" idrequest="'.$pr->id.'" class="product-detail">Lihat List Produk</a>';
                 $nestedData[$columns[4]] = $btn_approve;
 
                 $data[] = $nestedData;

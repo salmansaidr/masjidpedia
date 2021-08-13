@@ -13,7 +13,14 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+Route::post('/register', 'Api\AuthController@register');
+Route::post('/login', 'Api\AuthController@login');
+Route::post('/reset-password', 'Api\AuthController@resetPassword');
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+Route::middleware(['auth:api', 'verified'])->group(function () {
+    Route::get('/suppliers', 'Api\SupplierController@index');
+    Route::get('/suppliers/{id}/products', 'Api\ProductController@index');
+    Route::post('/request/{id}', 'Api\ProductController@storeRequest');
+    Route::get('/my-product', 'Api\ProductController@myProduct');
 });
+

@@ -1,0 +1,1 @@
+<p><a href="{{ $url }}" target="_blank">Klik di sini</a> untuk memverifikasi email anda.</p>

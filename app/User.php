@@ -5,10 +5,11 @@ namespace App;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Passport\HasApiTokens;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
-    use Notifiable;
+    use Notifiable, HasApiTokens;
 
     /**
      * The attributes that are mass assignable.
@@ -16,7 +17,7 @@ class User extends Authenticatable implements MustVerifyEmail
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'name', 'email', 'password', 'role'
     ];
 
     /**
@@ -46,5 +47,14 @@ class User extends Authenticatable implements MustVerifyEmail
     public function productRequests()
     {
         return $this->hasMany(ProductRequest::class, 'user_id', 'id');
+    }
+
+    public function requestAsSupplier() {
+        return $this->hasMany(ProductRequest::class, 'supplier_id', 'id');
+    }
+
+    public function store()
+    {
+        return $this->belongsToMany(Product::class, 'store_product', 'user_id', 'product_id',)->withPivot('stock');
     }
 }

@@ -22,15 +22,17 @@
               <li class="nav-item">
                 <a class="nav-link active" aria-current="page" href="#">Hallo, {{ Auth::user()->name }}</a>
               </li>
-              <li class="nav-item nav-request-toko">
-                <a class="nav-link active" aria-current="page" href="{{ route('product-request.index') }}" style="text-decoration: underline;">Request Toko</a>
-                @php
-                    $newRequest = \App\Http\Controllers\RequestProductSupplierController::countNewRequest();
-                @endphp
-                @if($newRequest)
-                  <div>!</div>
-                @endif
-              </li>
+              @if(Auth::user()->role == 'supplier')
+                <li class="nav-item nav-request-toko">
+                  <a class="nav-link active" aria-current="page" href="{{ route('product-request.index') }}" style="text-decoration: underline;">Request Toko</a>
+                  @php
+                      $newRequest = \App\Http\Controllers\RequestProductSupplierController::countNewRequest();
+                  @endphp
+                  @if($newRequest)
+                    <div>!</div>
+                  @endif
+                </li>
+              @endif
               <li class="nav-item">
                 <a class="nav-link active" style="text-decoration: underline;" href="{{ route('logout') }}"
                     onclick="event.preventDefault();

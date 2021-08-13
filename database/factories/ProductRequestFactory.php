@@ -10,9 +10,9 @@ use Faker\Generator as Faker;
 $factory->define(ProductRequest::class, function (Faker $faker) {
     $product_id = Product::all()->random()->id;
     $user = User::where('role', 'toko')->get()->random()->id;
+    $supplier = User::where('role', 'supplier')->get()->random()->id;
     return [
-        'amount' => random_int(50, 100),
+        'supplier_id' => $supplier,
         'user_id' => $user,
-        'product_id' => $product_id
     ];
 });

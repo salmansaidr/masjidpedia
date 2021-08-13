@@ -23,6 +23,8 @@ Route::get('/', function () {
     return view('login');
 })->name('main-login');
 
+Route::get('/verifymobile', 'Api\AuthController@verifyEmail')->name('verify-mobile');
+
 Route::middleware(['verified'])->group(function () {
     Route::get('/dashboard', 'DashboardController@index')->name('dashboard');
 
@@ -37,6 +39,7 @@ Route::middleware(['verified'])->group(function () {
     // ===== SUPPLIER PRODUCT REQUEST ======= //
     Route::get('/product-request', 'RequestProductSupplierController@index')->name('product-request.index');
     Route::get('/product-request/datatable', 'RequestProductSupplierController@datatable')->name('product-request.datatable');
+    Route::get('/product-request/detail/{id?}', 'RequestProductSupplierController@detailProduct')->name('product-request.detail');
     Route::put('/product-request/approve/{id?}', 'RequestProductSupplierController@approve')->name('product-request.approve');
 });
 

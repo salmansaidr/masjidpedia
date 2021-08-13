@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateProductRequestsTable extends Migration
+class CreateStoreProductTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,15 +13,13 @@ class CreateProductRequestsTable extends Migration
      */
     public function up()
     {
-        Schema::create('product_requests', function (Blueprint $table) {
-            $table->id();
+        Schema::create('store_product', function (Blueprint $table) {
             $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('supplier_id');
-            $table->tinyInteger('is_approve')->default(0);
-            $table->timestamps();
+            $table->unsignedBigInteger('product_id');
+            $table->integer('stock');
 
+            $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('supplier_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 
@@ -32,6 +30,6 @@ class CreateProductRequestsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('product_requests');
+        Schema::dropIfExists('store_product');
     }
 }

@@ -1,5 +1,24 @@
 @extends('main')
 
+@section('css')
+<style>
+.loader {
+  border: 16px solid #f3f3f3;
+  border-top: 16px solid #0d6efd;
+  border-radius: 50%;
+  width: 120px;
+  height: 120px;
+  animation: spin 2s linear infinite;
+  margin: auto;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+</style>
+@endsection
+
 @section('content')
     <div class="alert alert-success alert-success-abs fade hide" role="alert">
         <span></span>
@@ -12,9 +31,9 @@
             <table class="table table-striped" id="tableData" style="width: 100%;">
                 <thead>
                     <th>ID</th>
+                    <th>Tanggal</th>
                     <th>Toko</th>
                     <th>Produk</th>
-                    <th>Jumlah</th>
                     <th>Pilihan</th>
                 </thead>
                 <tbody>
@@ -35,6 +54,19 @@
             </div>
         </div>
     </div>
+    <div class="modal fade" id="modalProduct" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel"></h5>
+                    <button type="button" class="btn-close close-product" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body body-product">
+                    
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @section('js')
@@ -42,9 +74,30 @@
 var requestModal =  new bootstrap.Modal(document.getElementById('modalApprove'), {
   keyboard: false
 });
+var productModal =  new bootstrap.Modal(document.getElementById('modalProduct'), {
+  keyboard: false
+});
 
 $(document).ready( function () {
     getRequest();
+
+    $('body').on('click', '.product-detail', function(e) {
+        e.preventDefault();
+        var requestID = $(this).attr('idrequest');
+        $('.body-product').html(`<div class="loader"></div>`);
+        productModal.show();
+        $.ajax({
+            type: "GET",
+            url: "{{ route('product-request.detail') }}" + `/${requestID}`,
+            success(res) {
+                $('.body-product').html(res);
+            }
+        })
+    });
+
+    $('.close-product').on('click', function() {
+        productModal.hide();
+    })
 
     $('body').on('click', '.approve-btn', function() {
         $('.btn-approve').text('Ya');
@@ -97,9 +150,9 @@ $(document).ready( function () {
             },
             "columns": [
                 { "data": "id" },
+                { "data": "tanggal" },
                 { "data": "toko" },
                 { "data": "product" }, 
-                { "data": "amount" }, 
                 { "data": "options" }
             ],
             "autoWidth": true,
