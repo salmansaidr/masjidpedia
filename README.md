@@ -78,7 +78,8 @@ Method: **GET**
 Endpoint:
 
 > /api/suppliers/ID/products
-> ID: id supplier yang ingin diketahui data produknya.
+
+ID: id supplier yang ingin diketahui data produknya.
 
 Method: **GET**
 
@@ -87,7 +88,8 @@ Method: **GET**
 Endpoint:
 
 > /api/suppliers/ID/products
-> ID: id supplier yang ingin dikirimkan request.
+
+ID: id supplier yang ingin dikirimkan request.
 
 Method: **POST**
 
@@ -112,6 +114,6 @@ contoh data products:
 
 Endpoint:
 
-> /my-product
+> /api/my-product
 
 ## Selesai.
