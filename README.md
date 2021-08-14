@@ -6,7 +6,7 @@
 
 **3. Jalankan perintah berikut di terminal secara bertahap:**
 
-> composer-install
+> composer install
 
 kemudian:
 
