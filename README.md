@@ -1,4 +1,4 @@
-## Masjid Pedia Test (Petunjuk Penggunaan)
+## Masjid Pedia (Petunjuk Penggunaan)
 
 **1. Rename file .envexample menjadi .env**
 
